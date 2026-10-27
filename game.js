@@ -81,6 +81,7 @@ function tryRotate() {
     if (!collide(rotated, current.x + kick, current.y)) {
       current.shape = rotated;
       current.x += kick;
+      Sound.rotate();
       return;
     }
   }
@@ -109,6 +110,7 @@ function clearLines() {
     level = Math.floor(lines / 10) + 1;
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
     updateHUD();
+    Sound.clear(cleared);
   }
 }
 
@@ -123,6 +125,7 @@ function hardDrop() {
   score += (gy - current.y) * 2;
   current.y = gy;
   lockPiece();
+  Sound.drop();
 }
 
 function softDrop() {
@@ -137,6 +140,7 @@ function softDrop() {
 
 function lockPiece() {
   merge();
+  Sound.lock();
   clearLines();
   spawn();
 }
@@ -220,6 +224,7 @@ function drawNext() {
 
 function endGame() {
   gameOver = true;
+  Sound.gameOver();
   cancelAnimationFrame(animId);
   overlayTitle.textContent = 'GAME OVER';
   overlayScore.textContent = `Puntuación: ${score.toLocaleString()}`;
@@ -276,13 +281,14 @@ function init() {
 
 document.addEventListener('keydown', e => {
   if (e.code === 'KeyP') { togglePause(); return; }
+  if (e.code === 'KeyM') { Sound.toggleMute(); return; }
   if (paused || gameOver) return;
   switch (e.code) {
     case 'ArrowLeft':
-      if (!collide(current.shape, current.x - 1, current.y)) current.x--;
+      if (!collide(current.shape, current.x - 1, current.y)) { current.x--; Sound.move(); }
       break;
     case 'ArrowRight':
-      if (!collide(current.shape, current.x + 1, current.y)) current.x++;
+      if (!collide(current.shape, current.x + 1, current.y)) { current.x++; Sound.move(); }
       break;
     case 'ArrowDown':
       softDrop();
