@@ -24,7 +24,31 @@ const Sound = (() => {
   const WHOLE = [261.63, 293.66, 329.63, 369.99, 415.3, 466.16, 523.25];
   const DORIAN = [293.66, 329.63, 349.23, 392.0, 440.0, 493.88, 523.25];
 
+  // Frigio dominante en La (sabor de mariachi / son): A Bb C# D E F G A
+  const FRIGIO = [440.0, 466.16, 554.37, 587.33, 659.25, 698.46, 783.99, 880.0];
+
   const PROFILES = {
+    // Fiesta en el panteón: guitarrón, maracas, trompetas y campanas de altar.
+    muertos: {
+      filter: 5500,
+      move: [c(6000, 4, 0.03, 0.14), o('triangle', 880, 0.05, 0.1)],
+      rotate: [o('triangle', FRIGIO[4], 0.08, 0.22), o('triangle', FRIGIO[7], 0.1, 0.22, 0.05), c(7000, 3, 0.03, 0.12, 0.05)],
+      lock: [o('sine', 110, 0.25, 0.55, 0, 70), c(4500, 2, 0.05, 0.25), o('triangle', 1318.5, 0.2, 0.12, 0.02)],
+      drop: [o('sine', 140, 0.35, 0.7, 0, 45), c(5000, 1.5, 0.12, 0.3), c(6500, 3, 0.06, 0.2, 0.1), o('square', 220, 0.12, 0.1, 0, 110)],
+      // Trompetas de mariachi + maracas + campanitas de cempasúchil.
+      clear: n => [
+        c(7000, 3, 0.05, 0.2), c(7000, 3, 0.05, 0.2, 0.1), c(7000, 3, 0.05, 0.2, 0.2),
+        ...arp([FRIGIO[0], FRIGIO[2], FRIGIO[3], FRIGIO[4], FRIGIO[6], FRIGIO[7]].slice(0, Math.min(n + 3, 6)).map(f => f * 1.5),
+          'sawtooth', 0.09, 0.3, 0.1, 0.015),
+        ...arp([FRIGIO[4] * 2, FRIGIO[7] * 2, FRIGIO[4] * 2.5].slice(0, Math.min(n + 1, 3)), 'sine', 0.11, 0.9, 0.14, 0.005)
+          .map(s => ({ ...s, delay: s.delay + 0.12 })),
+        ...(n >= 4 ? [o('sine', 55, 0.5, 0.6, 0, 55), c(7500, 2, 0.3, 0.2, 0.5)] : []),
+      ],
+      // Trompeta lastimera que se despide... y campana de ánimas.
+      over: [...arp([FRIGIO[7], FRIGIO[6], FRIGIO[4], FRIGIO[2], FRIGIO[0]], 'sawtooth', 0.3, 0.7, 0.14, 0.04),
+        o('sine', 1318.5, 1.6, 0.22, 1.5, 1318.5, 0.005), o('sine', 55, 0.9, 0.5, 1.5, 38)],
+    },
+
     // Piedras calmadas (el original).
     clasico: {
       filter: 1800,
@@ -149,7 +173,7 @@ const Sound = (() => {
     },
   };
 
-  let profile = PROFILES.clasico;
+  let profile = PROFILES.muertos;
 
   function ensure() {
     if (muted) return false;
@@ -219,7 +243,7 @@ const Sound = (() => {
     gameOver: () => play(profile.over),
     // Cambia el perfil de sonido y toca un pequeño jingle de muestra.
     setTheme(id, preview = true) {
-      profile = PROFILES[id] || PROFILES.clasico;
+      profile = PROFILES[id] || PROFILES.muertos;
       if (soften) soften.frequency.value = profile.filter;
       if (preview) this.clear(2);
     },
