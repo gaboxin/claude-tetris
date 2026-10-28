@@ -14,7 +14,7 @@ const THEMES = [
   },
   {
     id: 'clasico', name: 'Clásico', icon: '🧱',
-    subtitle: 'TETRIS GAME IS A FORK FROM DEVTOOLS',
+    subtitle: 'EL DE TODA LA VIDA',
     joke: 'Ladrillos de toda la vida. Sin florituras, sin excusas.',
     colors: ['#4dd0e1', '#ffd54f', '#ba68c8', '#81c784', '#e57373', '#7986cb', '#ffb74d'],
     glyphs: null,
