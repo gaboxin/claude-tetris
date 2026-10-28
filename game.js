@@ -4,16 +4,9 @@ const COLS = 10;
 const ROWS = 20;
 const BLOCK = 30;
 
-const COLORS = [
-  null,
-  '#4dd0e1', // I - cyan
-  '#ffd54f', // O - yellow
-  '#ba68c8', // T - purple
-  '#81c784', // S - green
-  '#e57373', // Z - red
-  '#7986cb', // J - indigo
-  '#ffb74d', // L - orange
-];
+// Colores y emojis de las piezas dependen del tema activo (ver themes.js).
+let COLORS = [null];
+let theme = THEMES[0];
 
 const PIECES = [
   null,
@@ -39,6 +32,10 @@ const overlay = document.getElementById('overlay');
 const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
+const themeBtn = document.getElementById('theme-btn');
+const themeJoke = document.getElementById('theme-joke');
+const subtitleEl = document.getElementById('subtitle');
+const titleLetters = document.querySelectorAll('.title span');
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 
@@ -169,11 +166,18 @@ function drawBlock(context, x, y, colorIndex, size, alpha) {
   // highlight
   context.fillStyle = 'rgba(255,255,255,0.12)';
   context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+  if (theme.glyphs) {
+    context.fillStyle = 'rgba(0,0,0,0.75)';
+    context.font = `${Math.floor(size * 0.5)}px system-ui, sans-serif`;
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(theme.glyphs[colorIndex - 1], x * size + size / 2, y * size + size / 2 + 1);
+  }
   context.globalAlpha = 1;
 }
 
 function drawGrid() {
-  ctx.strokeStyle = '#22222e';
+  ctx.strokeStyle = theme.grid;
   ctx.lineWidth = 0.5;
   for (let c = 1; c < COLS; c++) {
     ctx.beginPath();
@@ -226,7 +230,7 @@ function endGame() {
   gameOver = true;
   Sound.gameOver();
   cancelAnimationFrame(animId);
-  overlayTitle.textContent = 'GAME OVER';
+  overlayTitle.textContent = theme.over;
   overlayScore.textContent = `Puntuación: ${score.toLocaleString()}`;
   overlay.classList.remove('hidden');
 }
@@ -239,7 +243,7 @@ function togglePause() {
     loop(lastTime);
   } else {
     cancelAnimationFrame(animId);
-    overlayTitle.textContent = 'PAUSA';
+    overlayTitle.textContent = theme.pause;
     overlayScore.textContent = '';
     overlay.classList.remove('hidden');
   }
@@ -259,6 +263,35 @@ function loop(ts) {
   }
   draw();
   animId = requestAnimationFrame(loop);
+}
+
+function applyTheme(id, preview) {
+  theme = THEMES.find(t => t.id === id) || THEMES[0];
+  COLORS = [null, ...theme.colors];
+  const rs = document.documentElement.style;
+  rs.setProperty('--bg', theme.bg);
+  rs.setProperty('--board', theme.board);
+  rs.setProperty('--grid', theme.grid);
+  rs.setProperty('--accent', theme.accent);
+  rs.setProperty('--danger', theme.danger);
+  titleLetters.forEach((el, i) => el.style.setProperty('--c', theme.colors[i % 7]));
+  subtitleEl.textContent = theme.subtitle;
+  themeBtn.textContent = `${theme.icon} ${theme.name}`;
+  themeJoke.textContent = theme.joke;
+  document.title = `Tetris · ${theme.name}`;
+  try { localStorage.setItem('tetris-theme', theme.id); } catch (e) { /* sin storage */ }
+  Sound.setTheme(theme.id, preview);
+  if (current) {
+    if (gameOver) overlayTitle.textContent = theme.over;
+    else if (paused) overlayTitle.textContent = theme.pause;
+    drawNext();
+    if (paused || gameOver) draw();
+  }
+}
+
+function nextTheme() {
+  const i = THEMES.findIndex(t => t.id === theme.id);
+  applyTheme(THEMES[(i + 1) % THEMES.length].id, true);
 }
 
 function init() {
@@ -281,6 +314,7 @@ function init() {
 
 document.addEventListener('keydown', e => {
   if (e.code === 'KeyP') { togglePause(); return; }
+  if (e.code === 'KeyT') { nextTheme(); return; }
   if (e.code === 'KeyM') { Sound.toggleMute(); return; }
   if (paused || gameOver) return;
   switch (e.code) {
@@ -306,5 +340,9 @@ document.addEventListener('keydown', e => {
 });
 
 restartBtn.addEventListener('click', init);
+themeBtn.addEventListener('click', () => { nextTheme(); themeBtn.blur(); });
 
+let savedTheme = null;
+try { savedTheme = localStorage.getItem('tetris-theme'); } catch (e) { /* sin storage */ }
+applyTheme(savedTheme, false);
 init();

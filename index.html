@@ -11,7 +11,7 @@
     <h1 class="title" aria-label="Tetris">
       <span style="--c:#4dd0e1">T</span><span style="--c:#ffd54f">E</span><span style="--c:#ba68c8">T</span><span style="--c:#81c784">R</span><span style="--c:#e57373">I</span><span style="--c:#ffb74d">S</span>
     </h1>
-    <p class="subtitle">TETRIS GAME IS A FORK FROM DEVTOOLS</p>
+    <p class="subtitle" id="subtitle">TETRIS GAME IS A FORK FROM DEVTOOLS</p>
   </header>
   <div class="wrapper">
     <div class="game-container">
@@ -36,6 +36,12 @@
           <canvas id="next-canvas" width="120" height="120"></canvas>
         </div>
 
+        <div class="panel-section">
+          <span class="label">TEMA</span>
+          <button id="theme-btn" type="button" title="Cambiar tema (T)">Clásico</button>
+          <span id="theme-joke" class="joke"></span>
+        </div>
+
         <div class="panel-section controls">
           <span class="label">CONTROLS</span>
           <ul>
@@ -45,6 +51,7 @@
             <li><kbd>Space</kbd> caída</li>
             <li><kbd>P</kbd> pausa</li>
             <li><kbd>M</kbd> silenciar</li>
+            <li><kbd>T</kbd> cambiar tema</li>
           </ul>
         </div>
       </aside>
@@ -59,6 +66,7 @@
     </div>
   </div>
 
+  <script src="themes.js"></script>
   <script src="sounds.js"></script>
   <script src="game.js"></script>
 </body>
