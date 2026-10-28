@@ -4,6 +4,15 @@
 // colors: I, O, T, S, Z, J, L  |  glyphs: un emoji por pieza (mismo orden)
 const THEMES = [
   {
+    id: 'muertos', name: 'Día de Muertos', icon: '💀',
+    subtitle: '¡VIVA LA VIDA! ¡VIVA LA MUERTE... DE LÍNEAS!',
+    joke: 'Hasta la calaca se echa su baile cuando completas cuatro líneas.',
+    colors: ['#18ffff', '#ffab00', '#e040fb', '#ff6d00', '#ff1744', '#7c4dff', '#ffea00'],
+    glyphs: ['💀', '🌼', '🕯️', '🪅', '🌺', '🦴', '🎺'],
+    bg: '#14061c', board: '#220a2e', grid: '#3d1650', accent: '#ff9100', danger: '#ff1744',
+    over: '¡SE LO LLEVÓ LA CALACA!', pause: 'ALTAR DE DESCANSO',
+  },
+  {
     id: 'clasico', name: 'Clásico', icon: '🧱',
     subtitle: 'TETRIS GAME IS A FORK FROM DEVTOOLS',
     joke: 'Ladrillos de toda la vida. Sin florituras, sin excusas.',
