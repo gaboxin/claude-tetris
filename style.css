@@ -4,8 +4,17 @@
   padding: 0;
 }
 
+:root {
+  --bg: #0f0f17;
+  --board: #1a1a25;
+  --grid: #22222e;
+  --accent: #7aa2f7;
+  --danger: #e57373;
+}
+
 body {
-  background: #0f0f17;
+  background: var(--bg);
+  transition: background 0.3s;
   color: #e0e0e0;
   font-family: system-ui, -apple-system, sans-serif;
   display: flex;
@@ -78,7 +87,7 @@ body {
 #board {
   display: block;
   border: 1px solid #2a2a3a;
-  background: #1a1a25;
+  background: var(--board);
   border-radius: 4px;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
 }
@@ -109,14 +118,14 @@ body {
   font-family: 'Courier New', Courier, monospace;
   font-size: 26px;
   font-weight: 700;
-  color: #7aa2f7;
+  color: var(--accent);
   letter-spacing: 1px;
 }
 
 #next-canvas {
   display: block;
   border: 1px solid #2a2a3a;
-  background: #1a1a25;
+  background: var(--board);
   border-radius: 4px;
 }
 
@@ -174,18 +183,18 @@ kbd {
   font-size: 28px;
   font-weight: 800;
   letter-spacing: 4px;
-  color: #e57373;
+  color: var(--danger);
 }
 
 #overlay-score {
   font-family: 'Courier New', Courier, monospace;
   font-size: 14px;
-  color: #7aa2f7;
+  color: var(--accent);
 }
 
 #restart-btn {
   margin-top: 8px;
-  background: #7aa2f7;
+  background: var(--accent);
   color: #0f0f17;
   border: none;
   border-radius: 6px;
@@ -197,6 +206,25 @@ kbd {
   transition: background 0.15s;
 }
 
-#restart-btn:hover {
-  background: #9bbdff;
+#restart-btn:hover, #theme-btn:hover {
+  filter: brightness(1.15);
+}
+
+#theme-btn {
+  background: var(--accent);
+  color: #0f0f17;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+
+.joke {
+  font-size: 11px;
+  font-style: italic;
+  color: #888;
+  line-height: 1.3;
 }
